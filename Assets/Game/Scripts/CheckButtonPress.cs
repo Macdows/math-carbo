@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
 
 public class CheckButtonPress : MonoBehaviour {
 
     private int score, hiScore;
 	public List<GameObject> selected = new List<GameObject>();
+	public List<GameObject> disabled = new List<GameObject>();
 	public string _operator;
 	public int answer;
 	public Image backgroundSprite;
+	public GameObject valueA , valueB, valueC, valueD, valueE;
 
     void Start()
     {
@@ -36,6 +38,11 @@ public class CheckButtonPress : MonoBehaviour {
 	void Awake()
 	{
 		backgroundSprite = GameObject.Find("BackgroundImage").GetComponent<Image>();
+		valueA = GameObject.Find ("ValueAText");
+		valueB = GameObject.Find ("ValueBText");
+		valueC = GameObject.Find ("ValueCText");
+		valueD = GameObject.Find ("ValueDText");
+		valueE = GameObject.Find ("ValueEText");
 	}
 
 	public void selectOperator(GameObject __operator)
@@ -66,25 +73,36 @@ public class CheckButtonPress : MonoBehaviour {
 		if (selected.Count != 0) {
 			if (selected.Count == 1) {
 				int value;
-				string valueText = selected [0].transform.GetChild (0).GetComponent<Text>().text;
+				string valueText = selected[0].transform.GetChild(0).GetComponent<Text>().text;
 				string answerText = GameObject.Find("AnswerText").GetComponent<Text>().text;
 				System.Int32.TryParse (valueText, out value);
-				System.Int32.TryParse(answerText, out answer);
+				System.Int32.TryParse (answerText, out answer);
 
 				if (value == answer) {
 					score++;
-					Debug.Log (score);
+					TimerBarController.instance.currentAmount = 1;
+					GameManager.singleton.currentScore = score;
+
+					for (int i = 0; i < disabled.Count; i++) {
+						ButtonColorReset(disabled[i]);
+						disabled[i].SetActive(true);
+					}
+
+					disabled.Clear();
+					MathsAndAnswerScript.instance.StartGameMode(GameManager.singleton.timeForQuestion);
+				} else {
+					StartCoroutine(ScreenFlash());
 				}
 			}
 
 			for (int i = 0; i < selected.Count; i++) {
-				ButtonColorReset (selected [i]);
+				ButtonColorReset(selected[i]);
 			}
-			selected.Clear ();
+			selected.Clear();
 			_operator = null;
+		} else {
 			StartCoroutine(ScreenFlash());
 		}
-		StartCoroutine(ScreenFlash());
 	}
 
 	private void Operation() {
@@ -101,7 +119,8 @@ public class CheckButtonPress : MonoBehaviour {
 			case "0":
 				c = a + b;
 				aText.text = "" + c.ToString ();
-				GameObject.Destroy (selected [1]);
+				selected[1].SetActive(false);
+				disabled.Add (selected [1]);
 				break;
 
 			case "1":
@@ -109,7 +128,8 @@ public class CheckButtonPress : MonoBehaviour {
 				{
 					c = a - b;
 					aText.text = "" + c.ToString();
-					GameObject.Destroy (selected [1]);
+					selected[1].SetActive(false);
+					disabled.Add (selected [1]);
 				}
 				else
 				{
@@ -122,7 +142,8 @@ public class CheckButtonPress : MonoBehaviour {
 			case "2":
 				c = a * b;
 				aText.text = "" + c.ToString();
-				GameObject.Destroy (selected [1]);
+				selected[1].SetActive(false);
+				disabled.Add (selected [1]);
 				break;
 
 			case "3":
@@ -130,7 +151,8 @@ public class CheckButtonPress : MonoBehaviour {
 				{
 					c = a / b;
 					aText.text = "" + c.ToString();
-					GameObject.Destroy (selected [1]);
+					selected[1].SetActive(false);
+					disabled.Add (selected [1]);
 				}
 				else
 				{

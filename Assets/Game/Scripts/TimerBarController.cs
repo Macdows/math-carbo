@@ -51,7 +51,7 @@ public class TimerBarController : MonoBehaviour {
         if (currentAmount <= 0)
         {
             //if the fill become zero , means the time is over we declare game over
-//            GameManager.singleton.isGameOver = true;
+            GameManager.singleton.isGameOver = true;
         }
 
     }
