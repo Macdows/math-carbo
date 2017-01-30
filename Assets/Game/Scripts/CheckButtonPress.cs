@@ -11,7 +11,7 @@ public class CheckButtonPress : MonoBehaviour {
 	public string _operator;
 	public int answer;
 	public Image backgroundSprite;
-	public GameObject valueA , valueB, valueC, valueD, valueE;
+	public GameObject answerObj;
 
     void Start()
     {
@@ -37,12 +37,7 @@ public class CheckButtonPress : MonoBehaviour {
 
 	void Awake()
 	{
-		backgroundSprite = GameObject.Find("BackgroundImage").GetComponent<Image>();
-		valueA = GameObject.Find ("ValueAText");
-		valueB = GameObject.Find ("ValueBText");
-		valueC = GameObject.Find ("ValueCText");
-		valueD = GameObject.Find ("ValueDText");
-		valueE = GameObject.Find ("ValueEText");
+		backgroundSprite.GetComponent<Image>();
 	}
 
 	public void selectOperator(GameObject __operator)
@@ -74,7 +69,7 @@ public class CheckButtonPress : MonoBehaviour {
 			if (selected.Count == 1) {
 				int value;
 				string valueText = selected[0].transform.GetChild(0).GetComponent<Text>().text;
-				string answerText = GameObject.Find("AnswerText").GetComponent<Text>().text;
+				string answerText = answerObj.GetComponent<Text>().text;
 				System.Int32.TryParse (valueText, out value);
 				System.Int32.TryParse (answerText, out answer);
 
@@ -163,7 +158,7 @@ public class CheckButtonPress : MonoBehaviour {
 				break;
 		}
 
-		ButtonColorReset (selected [0]);
+		ButtonColorReset(selected[0]);
 		selected.Clear();
 		_operator = null;
 	}
